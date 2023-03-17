@@ -28,7 +28,7 @@ contract MrCrypto is ERC721Enumerable {
     mapping(address => bool) isAdmin;
 
     modifier onlyAdmin() {
-        require(isAdmin[msg.sender]);
+        require(isAdmin[msg.sender], "not admin");
         _;
     }
 

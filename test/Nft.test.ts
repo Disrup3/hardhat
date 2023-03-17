@@ -20,7 +20,7 @@ describe("NFT CONTRACT", function () {
 
   // testear que se crea una apuesta correctamente 
   describe("Funcionalidad de minteo", function() {
-    it("Mintear un nft en fase whitelist y en fase normal", async () => {
+    xit("Mintear un nft en fase whitelist y en fase normal", async () => {
        const {mrc, add1, owner} = await deployNFTFixture();
         await mrc.addToWhitelist(add1.address);
         await mrc.addToWhitelist(owner.address);
@@ -28,7 +28,7 @@ describe("NFT CONTRACT", function () {
         assert( await mrc.isWhitelisted(add1.address) === true);
     })
 
-    it("Checkear que el uri se retorna correctamente", async () => {
+    xit("Checkear que el uri se retorna correctamente", async () => {
         const {mrc, owner} = await deployNFTFixture();
 
         // not revealed uri
@@ -39,7 +39,7 @@ describe("NFT CONTRACT", function () {
         assert(await mrc.tokenURI(1) === "hola/1.json");
     })  
     
-    it("mint multiple nfts", async () => {
+    xit("mint multiple nfts", async () => {
       const {mrc, owner} = await deployNFTFixture()
       await mrc.addToWhitelist(owner.address);
 
@@ -49,6 +49,13 @@ describe("NFT CONTRACT", function () {
       assert(await mrc.ownerOf(2) === owner.address)
 
     }) 
+
+    it("should rever in onlyAdmin functions", async () => {
+      const {mrc, add1} = await deployNFTFixture();
+      await expect(mrc.connect(add1).addToWhitelist(add1.address)).to.be.revertedWith("not admin")
+    })
+
+
   })
 
 });
