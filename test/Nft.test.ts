@@ -13,14 +13,14 @@ describe("NFT CONTRACT", function () {
     const [owner, add1] = await ethers.getSigners();
 
     const Contract = await ethers.getContractFactory("MrCrypto");
-    const mrc = await Contract.deploy("name", "symbol");
-
+    const mrc = await Contract.deploy("name", "symbol");   
+    
     return { mrc, owner, add1 };
   }
 
   // testear que se crea una apuesta correctamente 
   describe("Funcionalidad de minteo", function() {
-    xit("Mintear un nft en fase whitelist y en fase normal", async () => {
+    it("Mintear un nft en fase whitelist y en fase normal", async () => {
        const {mrc, add1, owner} = await deployNFTFixture();
         await mrc.addToWhitelist(add1.address);
         await mrc.addToWhitelist(owner.address);
@@ -28,7 +28,7 @@ describe("NFT CONTRACT", function () {
         assert( await mrc.isWhitelisted(add1.address) === true);
     })
 
-    xit("Checkear que el uri se retorna correctamente", async () => {
+    it("Checkear que el uri se retorna correctamente", async () => {
         const {mrc, owner} = await deployNFTFixture();
 
         // not revealed uri
@@ -39,7 +39,7 @@ describe("NFT CONTRACT", function () {
         assert(await mrc.tokenURI(1) === "hola/1.json");
     })  
     
-    xit("mint multiple nfts", async () => {
+    it("mint multiple nfts", async () => {
       const {mrc, owner} = await deployNFTFixture()
       await mrc.addToWhitelist(owner.address);
 
@@ -53,6 +53,15 @@ describe("NFT CONTRACT", function () {
     it("should rever in onlyAdmin functions", async () => {
       const {mrc, add1} = await deployNFTFixture();
       await expect(mrc.connect(add1).addToWhitelist(add1.address)).to.be.revertedWith("not admin")
+    })
+
+    it("compare hashes", async () => {
+      const passwordContract = await (await ethers.getContractFactory("Password")).deploy();
+
+      const hash = ethers.utils.solidityKeccak256(["string"], ["hola"]);
+      const tx = await passwordContract.comparePassword("hola");     
+
+      expect(tx).to.be.true
     })
 
 
