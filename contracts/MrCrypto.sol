@@ -27,11 +27,17 @@ contract MrCrypto is ERC721Enumerable {
     mapping(address => uint) public userMints;
     mapping(address => bool) isAdmin;
 
+    modifier onlyAdmin() {
+        require(isAdmin[msg.sender]);
+        _;
+    }
+
     constructor(
         string memory _name,
         string memory _symbol
     ) ERC721(_name, _symbol) {
         MAX_PER_USER = 5;
+        isAdmin[msg.sender] = true;
     }
 
     function mint(uint amount) external payable {
@@ -50,15 +56,32 @@ contract MrCrypto is ERC721Enumerable {
         require(totalSupply() + amount <= MAX_SUPPLY, "invalid amount");
         require(!paused, "contract paused");
         userMints[msg.sender] += amount;
+        uint256 ts = totalSupply();
 
         for (uint256 i = 1; i <= amount; ) {
-            _safeMint(msg.sender, totalSupply() + i);
+            _safeMint(msg.sender, ts + i);
 
             unchecked {
                 ++i;
             }
         }
     }
+
+    ///---- ADMIN FUNCTIONS ----////
+
+    function addToWhitelist(address whitelistedUser) external onlyAdmin {
+        isWhitelisted[whitelistedUser] = true;
+    }
+
+    function flipPause() external onlyAdmin {
+        paused = !paused;
+    }
+
+    function reveal() external onlyAdmin {
+        revealed = true;
+    }
+
+    ///---- VIEW FUNCTIONS ----////
 
     function tokenURI(
         uint256 tokenId
