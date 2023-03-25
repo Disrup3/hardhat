@@ -74,6 +74,8 @@ describe("BETS CONTRACT", function () {
         
         expect(await mocktoken.balanceOf(owner.address)).to.be.greaterThan(INITIAL_SUPPLY);
 
+       
+
     })
   })
 

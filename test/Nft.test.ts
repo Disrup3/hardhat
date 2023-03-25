@@ -52,6 +52,11 @@ describe("NFT CONTRACT", function () {
 
     it("should rever in onlyAdmin functions", async () => {
       const {mrc, add1} = await deployNFTFixture();
+
+      
+
+      const tx = await mrc.connect(add1).addToWhitelist(add1.address)    
+
       await expect(mrc.connect(add1).addToWhitelist(add1.address)).to.be.revertedWith("not admin")
     })
 
